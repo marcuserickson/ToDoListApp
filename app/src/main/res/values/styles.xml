@@ -23,4 +23,9 @@
         <item name="android:layout_width">0dp</item>
     </style>
 
+    <style name="ListActivityItemLeftJustified" parent = "@android:style/Widget.TextView">
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">0dp</item>
+    </style>
+
 </resources>

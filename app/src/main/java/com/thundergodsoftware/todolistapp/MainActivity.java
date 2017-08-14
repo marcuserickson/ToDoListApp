@@ -10,10 +10,14 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ListView;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 
 public class MainActivity extends AppCompatActivity {
 
+    private ArrayList<HashMap<String,String>> list;
     private ListView listEvents;
 
     @Override
@@ -69,10 +73,23 @@ public class MainActivity extends AppCompatActivity {
             categoryId = categoryDataSource.getCategoryId("Car");
         }
 
+        SimpleDateFormat dtFormat = new SimpleDateFormat("M/d/yy");
         listEvents = (ListView)findViewById(R.id.listEvents);
-
-        View headerView = View.inflate(this.getBaseContext(),R.layout.header_history, null );
+        View headerView = View.inflate(this.getBaseContext(),R.layout.header_eventlist, null );
         listEvents.addHeaderView(headerView);
+
+        final ArrayList<TodoItem> todoItemList = todoItemDataSource.getAllTodoItems();
+
+        list = new ArrayList<HashMap<String,String>>();
+        for ( int i=0; i<todoItemList.size(); i++) {
+            TodoItem todoItem = todoItemList.get(i);
+            HashMap<String,String> temp = new HashMap<String,String>();
+            temp.put(TodoItem.EVENTLIST_NAME_COLUMN, todoItem.name);
+            temp.put(TodoItem.EVENTLIST_DATE_COLUMN, dtFormat.format(todoItem.nextOccurrence));
+            list.add(temp);
+        }
+        EventListAdapter adapter = new EventListAdapter(this, list );
+        listEvents.setAdapter(adapter);
     }
 
     @Override

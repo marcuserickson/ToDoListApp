@@ -9,6 +9,10 @@ import java.util.Date;
 
 public class TodoItem {
 
+    // Event list view columns
+    public static final String EVENTLIST_NAME_COLUMN="Name";
+    public static final String EVENTLIST_DATE_COLUMN="Date";
+
     public enum Recurrence {
         ONCE,
         REPEATED;
