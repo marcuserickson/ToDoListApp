@@ -28,6 +28,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         try {
             db.execSQL(DataSourceTodoItem.getCreateTableSql());
+            db.execSQL(DataSourceCategory.getCreateTableSql());
         }
         catch ( SQLException ex ) {
             String s = ex.getMessage();
@@ -39,12 +40,13 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         // Drop older table if existed
         db.execSQL("DROP TABLE IF EXISTS " + DataSourceTodoItem.getTableName());
+        db.execSQL("DROP TABLE IF EXISTS " + DataSourceCategory.getTableName());
 
         // Create tables again
         onCreate(db);
     }
 
-    public static void deleteDatabase(Context context ) {
+    public static void deleteDatabase(Context context )  {
         context.deleteDatabase(DATABASE_NAME);
     }
 }

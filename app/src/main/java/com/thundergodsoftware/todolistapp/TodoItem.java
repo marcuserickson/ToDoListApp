@@ -15,6 +15,7 @@ public class TodoItem {
     }
 
     public long id;
+    public long categoryId;
     public String name = "";
     public Recurrence recurrence = Recurrence.ONCE;
     public Date lastOccurrence = new Date();
@@ -22,7 +23,7 @@ public class TodoItem {
     public int recurrenceDays = 0;
     public int recurrenceMonths = 0;
 
-    public TodoItem(int id, String name, Recurrence recurrence, int recurrenceDays, int recurrenceMonths, Date nextOccurrence, Date lastOccurrence) {
+    public TodoItem(long id, long categoryId, String name, Recurrence recurrence, int recurrenceDays, int recurrenceMonths, Date nextOccurrence, Date lastOccurrence) {
         this.id = id;
         this.name = name;
         this.recurrence = recurrence;
@@ -32,8 +33,9 @@ public class TodoItem {
         this.lastOccurrence = nextOccurrence;
     }
 
-    public TodoItem(String name, Recurrence recurrence, int recurrenceDays, int recurrenceMonths) {
+    public TodoItem(long categoryId, String name, Recurrence recurrence, int recurrenceDays, int recurrenceMonths) {
         this.id = -1;
+        this.categoryId = categoryId;
         this.name = name;
         this.recurrence = recurrence;
         this.recurrenceDays = recurrenceDays;
@@ -54,8 +56,9 @@ public class TodoItem {
         lastOccurrence = null;
     }
 
-    public TodoItem(String name, Recurrence recurrence, Date occurrence) {
+    public TodoItem(long categoryId, String name, Date occurrence) {
         this.id = -1;
+        this.categoryId = categoryId;
         this.name = name;
         this.recurrence = Recurrence.ONCE;
         nextOccurrence = occurrence;
@@ -64,6 +67,7 @@ public class TodoItem {
 
     public TodoItem(String name) {
         this.id = -1;
+        this.categoryId = -1;
         this.name = name;
         this.recurrence = Recurrence.ONCE;
         nextOccurrence = new Date();

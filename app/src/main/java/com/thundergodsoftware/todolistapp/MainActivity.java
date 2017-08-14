@@ -10,6 +10,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ListView;
 
+import java.util.Date;
+
 public class MainActivity extends AppCompatActivity {
 
     private ListView listEvents;
@@ -30,11 +32,47 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+
+        // load default events and categories
+        DataSourceCategory categoryDataSource = new DataSourceCategory(this.getBaseContext());
+        int categoryCount = categoryDataSource.getCategoryCount();
+        if ( categoryCount == 0 ) {
+            Category cat1 = new Category( "Home");
+            categoryDataSource.createCategory(cat1);
+            Category cat2 = new Category( "Bills");
+            categoryDataSource.createCategory(cat2);
+            Category cat3 = new Category( "Pool");
+            categoryDataSource.createCategory(cat3);
+            Category cat4 = new Category( "Car");
+            categoryDataSource.createCategory(cat4);
+        }
+        DataSourceTodoItem todoItemDataSource = new DataSourceTodoItem(this.getBaseContext());
+        int todoItemCount = todoItemDataSource.getTodoItemCount();
+        if ( todoItemCount == 0 ) {
+            long categoryId = categoryDataSource.getCategoryId("Pool");
+            TodoItem td1 = new TodoItem(categoryId, "Add Salt", TodoItem.Recurrence.REPEATED, 0, 1 );
+            todoItemDataSource.createTodoItem(td1);
+
+            categoryId = categoryDataSource.getCategoryId("Bills");
+            TodoItem td2 = new TodoItem(categoryId, "TDECU", TodoItem.Recurrence.REPEATED, 0, 1 );
+            todoItemDataSource.createTodoItem(td2);
+
+            categoryId = categoryDataSource.getCategoryId("Home");
+            TodoItem td3 = new TodoItem(categoryId, "Add Chlorine to Septic", TodoItem.Recurrence.REPEATED, 0, 1 );
+            todoItemDataSource.createTodoItem(td3);
+
+            TodoItem td4 = new TodoItem(categoryId, "Fix Exterior Trim", new Date(2017,9,1) );
+            todoItemDataSource.createTodoItem(td4);
+
+            categoryId = categoryDataSource.getCategoryId("Bills");
+            categoryId = categoryDataSource.getCategoryId("Home");
+            categoryId = categoryDataSource.getCategoryId("Car");
+        }
+
         listEvents = (ListView)findViewById(R.id.listEvents);
 
         View headerView = View.inflate(this.getBaseContext(),R.layout.header_history, null );
         listEvents.addHeaderView(headerView);
-
     }
 
     @Override

@@ -16,18 +16,19 @@ import java.util.Date;
 
 public class DataSourceTodoItem {
 
-    // Courses Table
+    // To Do Items Table
     private static final String TABLE_NAME = "todoItems";
     private static final String KEY_ID = "id";
+    private static final String KEY_CATEGORY_ID = "categoryId";
     private static final String KEY_NAME = "name";
     private static final String KEY_RECURRENCE = "recurrence";
     private static final String KEY_RECURRENCE_DAYS= "recurrence_days";
     private static final String KEY_RECURRENCE_MONTHS= "recurrence_months";
-    private static final String KEY_NEXT_OCCURRENCE = "nextOccurence";
+    private static final String KEY_NEXT_OCCURRENCE = "nextOccurrence";
     private static final String KEY_LAST_OCCURRENCE = "lastOccurrence";
 
     private static DatabaseHandler dbHelper;
-    private static String[] allColumns =  { KEY_ID, KEY_NAME,
+    private static String[] allColumns =  { KEY_ID, KEY_CATEGORY_ID, KEY_NAME,
                                             KEY_RECURRENCE, KEY_RECURRENCE_DAYS, KEY_RECURRENCE_MONTHS,
                                             KEY_NEXT_OCCURRENCE, KEY_LAST_OCCURRENCE };
 
@@ -41,7 +42,8 @@ public class DataSourceTodoItem {
 
     public static String getCreateTableSql() {
         return "CREATE TABLE IF NOT EXISTS " + TABLE_NAME +" ( " +
-                KEY_ID + " INTEGER PRIMARY KEY, " +
+                KEY_ID + " LONG PRIMARY KEY, " +
+                KEY_CATEGORY_ID + " LONG, " +
                 KEY_NAME + " STRING, " +
                 KEY_RECURRENCE + " STRING, " +
                 KEY_RECURRENCE_DAYS + " INTEGER, " +
@@ -65,7 +67,7 @@ public class DataSourceTodoItem {
         return newId;
     }
 
-    public TodoItem getTodoItem( int todoItemId )  {
+    public TodoItem getTodoItem( long todoItemId )  {
 
         SQLiteDatabase db = dbHelper.getReadableDatabase();
 
@@ -112,16 +114,18 @@ public class DataSourceTodoItem {
     }
 
     private TodoItem ConvertCursorToTodoItem( Cursor cursor ) {
-        int id = Integer.parseInt(cursor.getString(0));
-        String name  = cursor.getString(1);
-        TodoItem.Recurrence recurrence = TodoItem.Recurrence.valueOf(cursor.getString(2));
-        int recurrenceDays = Integer.parseInt(cursor.getString(3));
-        int recurrenceMonths = Integer.parseInt(cursor.getString(4));
-        int dateInMinutes = Integer.parseInt(cursor.getString(5));
+        long id = Long.parseLong(cursor.getString(0));
+        long categoryId = Long.parseLong(cursor.getString(1));
+        String name  = cursor.getString(2);
+        TodoItem.Recurrence recurrence = TodoItem.Recurrence.valueOf(cursor.getString(3));
+        int recurrenceDays = Integer.parseInt(cursor.getString(4));
+        int recurrenceMonths = Integer.parseInt(cursor.getString(5));
+        int dateInMinutes = Integer.parseInt(cursor.getString(6));
         Date nextOccurrence = Helpers.MinutesToDate(dateInMinutes);
         Date lastOccurrence = Helpers.MinutesToDate(dateInMinutes);
 
         TodoItem newTodoItem = new TodoItem( id,
+                categoryId,
                 name,
                 recurrence,
                 recurrenceDays,
@@ -136,6 +140,7 @@ public class DataSourceTodoItem {
         ContentValues values = new ContentValues();
 
         values.put(KEY_ID, todoItem.id );
+        values.put(KEY_CATEGORY_ID, todoItem.categoryId );
         values.put(KEY_NAME, todoItem.name);
         values.put(KEY_RECURRENCE, todoItem.recurrence.name() );
         values.put(KEY_RECURRENCE_DAYS, todoItem.recurrenceDays);
@@ -146,7 +151,7 @@ public class DataSourceTodoItem {
         return values;
     }
 
-    public void saveCourse( TodoItem todoItem ) {
+    public void saveTodoItem( TodoItem todoItem ) {
         if ( todoItem.id == -1 ) {
             createTodoItem(todoItem );
             return;
@@ -165,7 +170,7 @@ public class DataSourceTodoItem {
         db.close();
     }
 
-    public void deleteCourse( TodoItem todoItem ) {
+    public void deleteTodoItem( TodoItem todoItem ) {
 
         SQLiteDatabase db = dbHelper.getWritableDatabase();
 
